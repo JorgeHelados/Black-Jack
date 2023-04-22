@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
@@ -13,8 +14,14 @@ public class Deck : MonoBehaviour
     public Text probMessage;
 
     public int[] values = new int[52];
-    int cardIndex = 0;    
-       
+    int cardIndex = 0;
+
+    //------------------------------------------------------------
+    public GameObject cartaNormal;
+    public string[] nombres = new string[52];
+
+    //-------------------------------------------------------------
+    public List<GameObject> BarajaInicial = new List<GameObject>();
     private void Awake()
     {    
         InitCardValues();        
@@ -34,6 +41,47 @@ public class Deck : MonoBehaviour
          * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
          * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
          */
+
+        //Asignar los valores de un palo
+        int[] valoresPalo = new int[13];
+        int valoresPaloIndice = 0;
+
+        valoresPalo[0] = 11;
+        for (int i = 1; i <= valoresPalo.Length - 1; i++)
+        {
+            if (i < 10)
+            {
+                valoresPalo[i] = i + 1;
+            }
+            else
+            {
+                valoresPalo[i] = 10;
+            }
+
+        }
+
+        //Asgnar un valor a los elementos de values
+        for (int i = 0; i <= values.Length - 1; i++)
+        {
+            values[i] = valoresPalo[valoresPaloIndice];
+
+            valoresPaloIndice++;
+            if (valoresPaloIndice == 13)
+            {
+                valoresPaloIndice = 0;
+            }
+        }
+
+        //Baraja inicial como GameObject
+        for (int i = 0; i <= faces.Length - 1; i++)
+        {
+            GameObject carta = Instantiate(cartaNormal);
+            carta.name = nombres[i];
+            carta.GetComponent<CardModel>().value = values[i];
+            carta.GetComponent<CardModel>().front = faces[i];
+
+            BarajaInicial.Add(carta);
+        }
     }
 
     private void ShuffleCards()
