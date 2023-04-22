@@ -22,16 +22,19 @@ public class Deck : MonoBehaviour
 
     //-------------------------------------------------------------
     public List<GameObject> BarajaInicial = new List<GameObject>();
+    public List<GameObject> BarajaAleatoria = new List<GameObject>();
+    public List<GameObject> BarajaProbabilidades = new List<GameObject>();
+
     private void Awake()
-    {    
-        InitCardValues();        
+    {
+        InitCardValues();
 
     }
 
     private void Start()
     {
         ShuffleCards();
-        StartGame();        
+        StartGame();
     }
 
     private void InitCardValues()
@@ -90,7 +93,32 @@ public class Deck : MonoBehaviour
          * Barajar las cartas aleatoriamente.
          * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
          * Si lo necesitas, puedes definir nuevos arrays.
-         */       
+         */
+
+        BarajaAleatoria.Clear();
+
+        //Creación y copia de baraja en una baraja Auxiliar
+        List<GameObject> BarajaAux = new List<GameObject>();
+        foreach (GameObject carta in BarajaInicial)
+        {
+            BarajaAux.Add(carta);
+        }
+
+        //Baraja aleatoria
+        for (int i = 0; i <= 51; i++)
+        {
+            int indiceAleatorio = Random.Range(0, BarajaAux.Count - 1);
+            GameObject carta = BarajaAux[indiceAleatorio];
+            BarajaAux.RemoveAt(indiceAleatorio);
+            BarajaAleatoria.Add(carta);
+        }
+
+        //Baraja para calcular probabilidades
+        foreach (GameObject carta in BarajaAleatoria)
+        {
+            BarajaProbabilidades.Add(carta);
+        }
+        BarajaProbabilidades.Add(BarajaAleatoria[1]);
     }
 
     void StartGame()
@@ -120,8 +148,8 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
-        dealer.GetComponent<CardHand>().Push(faces[cardIndex],values[cardIndex]);
-        cardIndex++;        
+        dealer.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]);
+        cardIndex++;
     }
 
     void PushPlayer()
@@ -132,20 +160,20 @@ public class Deck : MonoBehaviour
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         cardIndex++;
         CalculateProbabilities();
-    }       
+    }
 
     public void Hit()
     {
         /*TODO: 
          * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
          */
-        
+
         //Repartimos carta al jugador
         PushPlayer();
 
         /*TODO:
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
-         */      
+         */
 
     }
 
@@ -159,8 +187,8 @@ public class Deck : MonoBehaviour
          * Repartimos cartas al dealer si tiene 16 puntos o menos
          * El dealer se planta al obtener 17 puntos o más
          * Mostramos el mensaje del que ha ganado
-         */                
-         
+         */
+
     }
 
     public void PlayAgain()
@@ -169,10 +197,10 @@ public class Deck : MonoBehaviour
         stickButton.interactable = true;
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
-        dealer.GetComponent<CardHand>().Clear();          
+        dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
         ShuffleCards();
         StartGame();
     }
-    
+
 }
