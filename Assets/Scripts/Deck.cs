@@ -19,10 +19,7 @@ public class Deck : MonoBehaviour
     //------------------------------------------------------------
     public GameObject cartaNormal;
     public string[] nombres = new string[52];
-
-
     //-------------------------------------------------------------
-
     //-------------------------------------------------------------
     public Text puntosJugador;
     public Text puntosDealer;
@@ -42,6 +39,11 @@ public class Deck : MonoBehaviour
         ShuffleCards();
         StartGame();
     }*/
+
+    private void Update()
+    {
+        puntosJugador.text = "Puntuación: " + jugador.GetComponent<CardHand>().points.ToString();
+    }
 
     private void InitCardValues()
     {
@@ -93,7 +95,7 @@ public class Deck : MonoBehaviour
         }
     }
 
-    private void ShuffleCards()
+    public void ShuffleCards()
     {
         /*TODO:
          * Barajar las cartas aleatoriamente.
@@ -127,7 +129,7 @@ public class Deck : MonoBehaviour
         BarajaProbabilidades.Add(BarajaAleatoria[1]);
     }
 
-    void StartGame()
+    public void StartGame()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -360,7 +362,7 @@ public class Deck : MonoBehaviour
         }
 
         //Empatar cuando el dealer y player tienen la misma puntuación
-        if (dealer.GetComponent<CardHand>().points == jugador.GetComponent<CardHand>().puntos)
+        if (dealer.GetComponent<CardHand>().points == jugador.GetComponent<CardHand>().points)
         {
             //Mensaje de empate
             finalMessage.text = "Empate";
@@ -438,14 +440,21 @@ public class Deck : MonoBehaviour
 
     public void PlayAgain()
     {
-        hitButton.interactable = true;
-        stickButton.interactable = true;
+        //Botones Interactuables
+        hitButton.interactable = false;
+        stickButton.interactable = false;
+
+        //Reseteos
         finalMessage.text = "";
         jugador.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
+        BarajaProbabilidades.Clear();
+        probMessage.text = "";
         cardIndex = 0;
-        ShuffleCards();
-        StartGame();
+        puntosDealer.enabled = false;
+
+        //Activar Botones de Apuesta
+        this.gameObject.GetComponent<Bet>().activarBotonesApostar();
     }
 
 }
