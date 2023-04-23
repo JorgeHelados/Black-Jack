@@ -37,11 +37,11 @@ public class Deck : MonoBehaviour
 
     }
 
-    private void Start()
+    /*private void Start()
     {
         ShuffleCards();
         StartGame();
-    }
+    }*/
 
     private void InitCardValues()
     {
