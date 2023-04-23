@@ -346,6 +346,94 @@ public class Deck : MonoBehaviour
          * Mostramos el mensaje del que ha ganado
          */
 
+        //Desactivar botones
+        hitButton.interactable = false;
+        stickButton.interactable = false;
+
+        //Girar 1ª carta del dealer
+        dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+        //Si tiene menos de 17 el dealer pide cartas
+        while (dealer.GetComponent<CardHand>().points < 17)
+        {
+            PushDealer();
+        }
+
+        //Empatar cuando el dealer y player tienen la misma puntuación
+        if (dealer.GetComponent<CardHand>().points == jugador.GetComponent<CardHand>().puntos)
+        {
+            //Mensaje de empate
+            finalMessage.text = "Empate";
+            finalMessage.color = Color.yellow;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().empatarApuesta();
+        }
+
+        //Ganar cuando el dealer se ha pasado de 21
+        else if (dealer.GetComponent<CardHand>().points > 21)
+        {
+            //Mensaje de victoria
+            finalMessage.text = "Has ganado";
+            finalMessage.color = Color.green;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().ganarApuesta();
+        }
+
+        //Ganar cuando la puntuacion del player es mayor a la del dealer al plantarse
+        else if (jugador.GetComponent<CardHand>().points > dealer.GetComponent<CardHand>().points)
+        {
+            //Mensaje de victoria
+            finalMessage.text = "Has ganado";
+            finalMessage.color = Color.green;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().ganarApuesta();
+        }
+
+        //Perder cuando la puntuacion del player es menor a la del dealer al plantarse
+        else if (jugador.GetComponent<CardHand>().points < dealer.GetComponent<CardHand>().points)
+        {
+            //Mensaje de derrota
+            finalMessage.text = "Has perdido";
+            finalMessage.color = Color.red;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().perderApuesta();
+        }
     }
 
     public void PlayAgain()
