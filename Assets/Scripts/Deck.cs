@@ -6,7 +6,7 @@ public class Deck : MonoBehaviour
 {
     public Sprite[] faces;
     public GameObject dealer;
-    public GameObject player;
+    public GameObject jugador;
     public Button hitButton;
     public Button stickButton;
     public Button playAgainButton;
@@ -20,6 +20,12 @@ public class Deck : MonoBehaviour
     public GameObject cartaNormal;
     public string[] nombres = new string[52];
 
+
+    //-------------------------------------------------------------
+
+    //-------------------------------------------------------------
+    public Text puntosJugador;
+    public Text puntosDealer;
     //-------------------------------------------------------------
     public List<GameObject> BarajaInicial = new List<GameObject>();
     public List<GameObject> BarajaAleatoria = new List<GameObject>();
@@ -130,6 +136,67 @@ public class Deck : MonoBehaviour
             /*TODO:
              * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
              */
+
+            //Hay 3 tres casos para al acabar una partida
+            //Caso 1: Empatar al empezar partida
+            if (dealer.GetComponent<CardHand>().points == 21 && jugador.GetComponent<CardHand>().points == 21)
+            {
+                //Mensaje de empate
+                finalMessage.text = "Empate";
+                finalMessage.color = Color.yellow;
+
+                //Desactivar botones
+                hitButton.interactable = false;
+                stickButton.interactable = false;
+
+                //Mostrar puntuación dealer
+                puntosDealer.enabled = true;
+                puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+                //Apuesta
+                this.gameObject.GetComponent<Bet>().empatarApuesta();
+            }
+
+            //Caso 2: Ganar si player tiene 21 y el dealer tiene menos de 21 al empezar partida
+            else if (jugador.GetComponent<CardHand>().points == 21 || dealer.GetComponent<CardHand>().points > 21)
+            {
+                //Mensaje de victoria
+                finalMessage.text = "Has ganado";
+                finalMessage.color = Color.green;
+
+                //Desactivar botones
+                hitButton.interactable = false;
+                stickButton.interactable = false;
+
+                //Mostrar puntuación dealer
+                puntosDealer.enabled = true;
+                puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+                //Apuesta
+                this.gameObject.GetComponent<Bet>().ganarApuesta();
+            }
+
+            //Caso 3: Perder si dealer tiene 21 y el player tiene menos de 21 al empezar partida
+            else if (dealer.GetComponent<CardHand>().points == 21 || jugador.GetComponent<CardHand>().points > 21)
+            {
+                //Mensaje de derrota
+                finalMessage.text = "Has perdido";
+                finalMessage.color = Color.red;
+
+                //Desactivar botones
+                hitButton.interactable = false;
+                stickButton.interactable = false;
+
+                //Mostrar puntuación dealer
+                puntosDealer.enabled = true;
+                puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+                //Apuesta
+                this.gameObject.GetComponent<Bet>().perderApuesta();
+            }
         }
     }
 
@@ -157,7 +224,7 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
-        player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
+        jugador.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         cardIndex++;
         CalculateProbabilities();
     }
@@ -196,7 +263,7 @@ public class Deck : MonoBehaviour
         hitButton.interactable = true;
         stickButton.interactable = true;
         finalMessage.text = "";
-        player.GetComponent<CardHand>().Clear();
+        jugador.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
         ShuffleCards();
