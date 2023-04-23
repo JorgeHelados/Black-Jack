@@ -292,6 +292,46 @@ public class Deck : MonoBehaviour
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
          */
 
+        //Perder si player tiene mas de 21 al pedir una carta
+        if (jugador.GetComponent<CardHand>().points > 21)
+        {
+            //Mensaje de derrota
+            finalMessage.text = "Has perdido";
+            finalMessage.color = Color.red;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+            dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().perderApuesta();
+        }
+
+        //Ganar si player tiene 21 al pedir una carta
+        else if (jugador.GetComponent<CardHand>().points == 21)
+        {
+            //Mensaje de victoria
+            finalMessage.text = "Has ganado";
+            finalMessage.color = Color.green;
+
+            //Desactivar botones
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+            //Mostrar puntuación dealer
+            puntosDealer.enabled = true;
+            puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
+            dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+
+            //Apuesta
+            this.gameObject.GetComponent<Bet>().ganarApuesta();
+        }
+
     }
 
     public void Stand()
