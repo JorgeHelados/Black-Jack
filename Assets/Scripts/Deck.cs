@@ -208,6 +208,48 @@ public class Deck : MonoBehaviour
          * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
          * - Probabilidad de que el jugador obtenga más de 21 si pide una carta          
          */
+
+        //PROBABILIDAD 1: Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
+
+        double cartasProb1 = 0;
+        double Prob1 = 0;
+        foreach (GameObject carta in BarajaProbabilidades)
+        {
+            if (carta.GetComponent<CardModel>().value + BarajaAleatoria[3].gameObject.GetComponent<CardModel>().value > jugador.gameObject.GetComponent<CardHand>().points)
+            {
+                cartasProb1++;
+            }
+        }
+        Prob1 = (cartasProb1 / BarajaProbabilidades.Count) * 100;
+        probMessage.text = "El dealer tiene más puntuación: " + string.Format("{0:0.00}", Prob1) + "% \n";
+
+        //PROBABILIDAD 2: Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
+
+        double cartasProb2 = 0;
+        double Prob2 = 0;
+        foreach (GameObject carta in BarajaProbabilidades)
+        {
+            if (carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points <= 21 && carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points >= 17)
+            {
+                cartasProb2++;
+            }
+        }
+        Prob2 = (cartasProb2 / BarajaProbabilidades.Count) * 100;
+        probMessage.text += "Obtener entre 17 y 21: " + string.Format("{0:0.00}", Prob2) + "% \n";
+
+        //PROBABILIDAD 3: Probabilidad de que el jugador obtenga más de 21 si pide una carta          
+
+        double cartasProb3 = 0;
+        double Prob3 = 0;
+        foreach (GameObject carta in BarajaProbabilidades)
+        {
+            if (carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points > 21)
+            {
+                cartasProb3++;
+            }
+        }
+        Prob3 = (cartasProb3 / BarajaProbabilidades.Count) * 100;
+        probMessage.text += "Obtener mas de 21: " + string.Format("{0:0.00}", Prob3) + "%";
     }
 
     void PushDealer()
