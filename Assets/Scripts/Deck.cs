@@ -452,7 +452,6 @@ public class Deck : MonoBehaviour
         probMessage.text = "";
         cardIndex = 0;
         puntosDealer.enabled = false;
-
         //Activar Botones de Apuesta
         this.gameObject.GetComponent<Bet>().activarBotonesApostar();
     }

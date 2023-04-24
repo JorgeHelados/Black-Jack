@@ -22,6 +22,7 @@ public class Bet : MonoBehaviour
     public Button All_InButton;
     public Button ClearButton;
     public Button BetButton;
+    public Button BetButtonActivado;
 
     [Header("Apuestas Texto")]
     public Text cartera_text;
@@ -125,7 +126,6 @@ public class Bet : MonoBehaviour
 
         //Deshabilitar botones de Apuestas
         desactivarBotonesApostar();
-
     }
 
     //-----------------------------------------------------------// 
@@ -161,10 +161,14 @@ public class Bet : MonoBehaviour
         Minus1000Button.interactable = false;
         ClearButton.interactable = false;
         All_InButton.interactable = false;
+        BetButton.gameObject.SetActive(false);
+        BetButton.interactable = false;
+        BetButtonActivado.gameObject.SetActive(false);
     }
 
     public void activarBotonesApostar()
     {
+        BetButton.interactable = true;
         Plus50Button.interactable = true;
         Plus100Button.interactable = true;
         Plus1000Button.interactable = true;
@@ -173,6 +177,9 @@ public class Bet : MonoBehaviour
         Minus1000Button.interactable = true;
         ClearButton.interactable = true;
         All_InButton.interactable = true;
+        BetButton.gameObject.SetActive(true);
+        BetButton.interactable = true;
+        BetButtonActivado.gameObject.SetActive(true);
     }
 
     //-----------------------------------------------------------------------------// 
