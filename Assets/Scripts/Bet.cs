@@ -39,12 +39,17 @@ public class Bet : MonoBehaviour
         //Deshabilitar botones del Juego
         this.gameObject.GetComponent<Deck>().hitButton.interactable = false;
         this.gameObject.GetComponent<Deck>().stickButton.interactable = false;
+        BetButton.interactable = true;
     }
 
     void Update()
     {
         cartera_text.text = cartera.ToString();
         apuesta_text.text = apuesta.ToString();
+        if (!BetButton.IsInteractable())
+        {
+            BetButton.interactable = true;
+        }
     }
 
     //-----------------------------------------------------------// 
@@ -162,8 +167,7 @@ public class Bet : MonoBehaviour
         ClearButton.interactable = false;
         All_InButton.interactable = false;
         BetButton.gameObject.SetActive(false);
-        BetButton.interactable = false;
-        BetButtonActivado.gameObject.SetActive(false);
+        BetButtonActivado.gameObject.SetActive(true);
     }
 
     public void activarBotonesApostar()
@@ -178,8 +182,7 @@ public class Bet : MonoBehaviour
         ClearButton.interactable = true;
         All_InButton.interactable = true;
         BetButton.gameObject.SetActive(true);
-        BetButton.interactable = true;
-        BetButtonActivado.gameObject.SetActive(true);
+        BetButtonActivado.gameObject.SetActive(false);
     }
 
     //-----------------------------------------------------------------------------// 
