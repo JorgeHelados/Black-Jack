@@ -16,29 +16,23 @@ public class Deck : MonoBehaviour
     public int[] values = new int[52];
     int cardIndex = 0;
 
-    //------------------------------------------------------------
     public GameObject cartaNormal;
     public string[] nombres = new string[52];
-    //-------------------------------------------------------------
-    //-------------------------------------------------------------
+
     public Text puntosJugador;
     public Text puntosDealer;
-    //-------------------------------------------------------------
+
     public List<GameObject> BarajaInicial = new List<GameObject>();
     public List<GameObject> BarajaAleatoria = new List<GameObject>();
     public List<GameObject> BarajaProbabilidades = new List<GameObject>();
+
+    //-----------------------------------------------------------------------
 
     private void Awake()
     {
         InitCardValues();
 
     }
-
-    /*private void Start()
-    {
-        ShuffleCards();
-        StartGame();
-    }*/
 
     private void Update()
     {
@@ -47,18 +41,14 @@ public class Deck : MonoBehaviour
 
     private void InitCardValues()
     {
-        /*TODO:
-         * Asignar un valor a cada una de las 52 cartas del atributo "values".
-         * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
-         * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
-         */
+
 
         //Asignar los valores de un palo
         int[] valoresPalo = new int[13];
         int valoresPaloIndice = 0;
 
         valoresPalo[0] = 11;
-        for (int i = 1; i <= valoresPalo.Length - 1; i++)
+        for (int i = 1; i <= valoresPalo.Length - 1; i++) //asignar valor a las cartas
         {
             if (i < 10)
             {
@@ -83,7 +73,7 @@ public class Deck : MonoBehaviour
             }
         }
 
-        //Baraja inicial como GameObject
+        //Pasar cartas a GameObjects
         for (int i = 0; i <= faces.Length - 1; i++)
         {
             GameObject carta = Instantiate(cartaNormal);
@@ -97,28 +87,22 @@ public class Deck : MonoBehaviour
 
     public void ShuffleCards()
     {
-        /*TODO:
-         * Barajar las cartas aleatoriamente.
-         * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
-         * Si lo necesitas, puedes definir nuevos arrays.
-         */
-
         BarajaAleatoria.Clear();
 
         //Creación y copia de baraja en una baraja Auxiliar
-        List<GameObject> BarajaAux = new List<GameObject>();
+        List<GameObject> BarajaAux = new List<GameObject>();    //Crea baraja auxiliar
         foreach (GameObject carta in BarajaInicial)
         {
-            BarajaAux.Add(carta);
+            BarajaAux.Add(carta);   //Copia baraja inicial
         }
 
         //Baraja aleatoria
         for (int i = 0; i <= 51; i++)
         {
-            int indiceAleatorio = Random.Range(0, BarajaAux.Count - 1);
-            GameObject carta = BarajaAux[indiceAleatorio];
-            BarajaAux.RemoveAt(indiceAleatorio);
-            BarajaAleatoria.Add(carta);
+            int indiceAleatorio = Random.Range(0, BarajaAux.Count - 1); //elige  un numero aleatoria entre 1-51
+            GameObject carta = BarajaAux[indiceAleatorio];  //elige la carta aleatoria
+            BarajaAux.RemoveAt(indiceAleatorio);    //Saca la carta de la baraja auxiliar
+            BarajaAleatoria.Add(carta); //La mete en la baraja 
         }
 
         //Baraja para calcular probabilidades
@@ -133,70 +117,57 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
+            //Dar cartas
             PushPlayer();
             PushDealer();
-            /*TODO:
-             * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
-             */
 
-            //Hay 3 tres casos para al acabar una partida
-            //Caso 1: Empatar al empezar partida
+
+            //------------------------------Empatar al empezar partida-------------------------------------------
             if (dealer.GetComponent<CardHand>().points == 21 && jugador.GetComponent<CardHand>().points == 21)
             {
-                //Mensaje de empate
-                finalMessage.text = "Empate";
+                finalMessage.text = "Empate";   //mensaje de empate
                 finalMessage.color = Color.yellow;
-
-                //Desactivar botones
+                //Desactivar botones de plantar y pedir
                 hitButton.interactable = false;
                 stickButton.interactable = false;
-
                 //Mostrar puntuación dealer
                 puntosDealer.enabled = true;
                 puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
-                //Apuesta
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);    //ver cartas ocultas de Dealer
+                //Dar resultado de la apuesta
                 this.gameObject.GetComponent<Bet>().empatarApuesta();
             }
 
-            //Caso 2: Ganar si player tiene 21 y el dealer tiene menos de 21 al empezar partida
+            //----------Ganar si player tiene 21 y el dealer tiene menos de 21 al empezar partida----------------
             else if (jugador.GetComponent<CardHand>().points == 21 || dealer.GetComponent<CardHand>().points > 21)
             {
-                //Mensaje de victoria
-                finalMessage.text = "Has ganado";
+                finalMessage.text = "Has ganado";   //Mensaje de victoria
                 finalMessage.color = Color.green;
-
-                //Desactivar botones
+                //Desactivar botones de plantar y pedir
                 hitButton.interactable = false;
                 stickButton.interactable = false;
-
                 //Mostrar puntuación dealer
                 puntosDealer.enabled = true;
                 puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
-                //Apuesta
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);    //ver cartas ocultas de Dealer
+                //Dar resultado de la apuesta
                 this.gameObject.GetComponent<Bet>().ganarApuesta();
             }
 
-            //Caso 3: Perder si dealer tiene 21 y el player tiene menos de 21 al empezar partida
+            //Perder si dealer tiene 21 y el player tiene menos de 21 al empezar partida
             else if (dealer.GetComponent<CardHand>().points == 21 || jugador.GetComponent<CardHand>().points > 21)
             {
                 //Mensaje de derrota
                 finalMessage.text = "Has perdido";
                 finalMessage.color = Color.red;
-
-                //Desactivar botones
+                //Desactivar botones de plantar y pedir
                 hitButton.interactable = false;
                 stickButton.interactable = false;
-
                 //Mostrar puntuación dealer
                 puntosDealer.enabled = true;
                 puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
-                //Apuesta
+                dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);    //ver cartas ocultas de Dealer
+                //Dar resultado de la apuesta
                 this.gameObject.GetComponent<Bet>().perderApuesta();
             }
         }
@@ -204,133 +175,105 @@ public class Deck : MonoBehaviour
 
     private void CalculateProbabilities()
     {
-        /*TODO:
-         * Calcular las probabilidades de:
-         * - Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
-         * - Probabilidad de que el jugador obtenga más de 21 si pide una carta          
-         */
-
-        //PROBABILIDAD 1: Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-
+        //-----------------------------Probabilidad de que el dealer tenga más puntuación que el jugador----------------------------------------
         double cartasProb1 = 0;
         double Prob1 = 0;
-        foreach (GameObject carta in BarajaProbabilidades)
+        foreach (GameObject carta in BarajaProbabilidades)  //Valor carta + valor carta aleatoria > puntuacion actual
         {
             if (carta.GetComponent<CardModel>().value + BarajaAleatoria[3].gameObject.GetComponent<CardModel>().value > jugador.gameObject.GetComponent<CardHand>().points)
             {
                 cartasProb1++;
             }
         }
+        //Calcular y escribir porcentaje
         Prob1 = (cartasProb1 / BarajaProbabilidades.Count) * 100;
         probMessage.text = "El dealer tiene más puntuación: " + string.Format("{0:0.00}", Prob1) + "% \n";
 
-        //PROBABILIDAD 2: Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
-
+        //-----------------------------Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta--------------------------------
         double cartasProb2 = 0;
         double Prob2 = 0;
-        foreach (GameObject carta in BarajaProbabilidades)
+        foreach (GameObject carta in BarajaProbabilidades)  //Valo carta + puntos del jugador <= 21 y Valo carta + puntos del jugador >= 17
         {
             if (carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points <= 21 && carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points >= 17)
             {
                 cartasProb2++;
             }
         }
+        //Calcular y escribir porcentaje
         Prob2 = (cartasProb2 / BarajaProbabilidades.Count) * 100;
         probMessage.text += "Obtener entre 17 y 21: " + string.Format("{0:0.00}", Prob2) + "% \n";
 
-        //PROBABILIDAD 3: Probabilidad de que el jugador obtenga más de 21 si pide una carta          
-
+        //-----------------------------Probabilidad de que el jugador obtenga más de 21 si pide una carta---------------------------------------------        
         double cartasProb3 = 0;
         double Prob3 = 0;
-        foreach (GameObject carta in BarajaProbabilidades)
+        foreach (GameObject carta in BarajaProbabilidades)  //Valor carta + puntos del jugador > 21
         {
             if (carta.GetComponent<CardModel>().value + jugador.gameObject.GetComponent<CardHand>().points > 21)
             {
                 cartasProb3++;
             }
         }
+        //Calcular y escribir porcentaje
         Prob3 = (cartasProb3 / BarajaProbabilidades.Count) * 100;
         probMessage.text += "Obtener mas de 21: " + string.Format("{0:0.00}", Prob3) + "%";
     }
 
     void PushDealer()
     {
-        /*TODO:
-         * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
-         */
+        //Vaciar la baraja que calcula probabilidad
         BarajaProbabilidades.Remove(BarajaAleatoria[cardIndex]);
-
+        //Dar cartas
         dealer.GetComponent<CardHand>().Push(BarajaAleatoria[cardIndex].GetComponent<CardModel>().front,
             BarajaAleatoria[cardIndex].GetComponent<CardModel>().value);
-
+        //suma index de la baraja en uso
         cardIndex++;
     }
 
     void PushPlayer()
     {
-        /*TODO:
-         * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
-         */
+        //Vaciar la baraja que calcula probabilidad
         BarajaProbabilidades.Remove(BarajaAleatoria[cardIndex]);
-
+        //Dar cartas
         jugador.GetComponent<CardHand>().Push(BarajaAleatoria[cardIndex].GetComponent<CardModel>().front,
            BarajaAleatoria[cardIndex].GetComponent<CardModel>().value);
-
+        //suma index de la baraja en uso
         cardIndex++;
         CalculateProbabilities();
     }
 
     public void Hit()
     {
-        /*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
-
         //Repartimos carta al jugador
         PushPlayer();
-
-        /*TODO:
-         * Comprobamos si el jugador ya ha perdido y mostramos mensaje
-         */
-
-        //Perder si player tiene mas de 21 al pedir una carta
+        //--------------------------------Perder si player tiene mas de 21 al pedir una carta---------------------------------------------------
         if (jugador.GetComponent<CardHand>().points > 21)
         {
-            //Mensaje de derrota
-            finalMessage.text = "Has perdido";
+            finalMessage.text = "Has perdido";  //Mensaje de derrota
             finalMessage.color = Color.red;
-
-            //Desactivar botones
+            //Desactivar botones de pedir y quedarse
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
             dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
-            //Apuesta
+            //Dar apuesta
             this.gameObject.GetComponent<Bet>().perderApuesta();
         }
 
-        //Ganar si player tiene 21 al pedir una carta
+        //-----------------------------------Ganar si player tiene 21 al pedir una carta--------------------------------------------
         else if (jugador.GetComponent<CardHand>().points == 21)
         {
-            //Mensaje de victoria
-            finalMessage.text = "Has ganado";
+            finalMessage.text = "Has ganado";   //Mensaje de victoria
             finalMessage.color = Color.green;
-
             //Desactivar botones
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
             dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
-            //Apuesta
+            //Dar apuesta
             this.gameObject.GetComponent<Bet>().ganarApuesta();
         }
 
@@ -338,102 +281,73 @@ public class Deck : MonoBehaviour
 
     public void Stand()
     {
-        /*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
-
-        /*TODO:
-         * Repartimos cartas al dealer si tiene 16 puntos o menos
-         * El dealer se planta al obtener 17 puntos o más
-         * Mostramos el mensaje del que ha ganado
-         */
-
         //Desactivar botones
         hitButton.interactable = false;
         stickButton.interactable = false;
-
         //Girar 1ª carta del dealer
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
-
         //Si tiene menos de 17 el dealer pide cartas
         while (dealer.GetComponent<CardHand>().points < 17)
         {
             PushDealer();
         }
-
-        //Empatar cuando el dealer y player tienen la misma puntuación
+        //--------------------------------Empatar cuando el dealer y player tienen la misma puntuación----------------------------------------
         if (dealer.GetComponent<CardHand>().points == jugador.GetComponent<CardHand>().points)
         {
-            //Mensaje de empate
-            finalMessage.text = "Empate";
+            finalMessage.text = "Empate";   //Mensaje de empate
             finalMessage.color = Color.yellow;
-
             //Desactivar botones
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-
-            //Apuesta
+            // Dar apuesta
             this.gameObject.GetComponent<Bet>().empatarApuesta();
         }
 
-        //Ganar cuando el dealer se ha pasado de 21
+        //-----------------------------------------Ganar cuando el dealer se ha pasado de 21--------------------------------------------------------
         else if (dealer.GetComponent<CardHand>().points > 21)
         {
-            //Mensaje de victoria
-            finalMessage.text = "Has ganado";
+            finalMessage.text = "Has ganado";   //Mensaje de victoria
             finalMessage.color = Color.green;
-
             //Desactivar botones
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-
-            //Apuesta
+            //Dar apuesta
             this.gameObject.GetComponent<Bet>().ganarApuesta();
         }
 
-        //Ganar cuando la puntuacion del player es mayor a la del dealer al plantarse
+        //------------------------Ganar cuando la puntuacion del player es mayor a la del dealer al plantarse----------------------------------------
         else if (jugador.GetComponent<CardHand>().points > dealer.GetComponent<CardHand>().points)
         {
-            //Mensaje de victoria
-            finalMessage.text = "Has ganado";
+            finalMessage.text = "Has ganado";   //Mensaje de victoria
             finalMessage.color = Color.green;
-
             //Desactivar botones
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-
-            //Apuesta
+            //Dar apuesta
             this.gameObject.GetComponent<Bet>().ganarApuesta();
         }
 
-        //Perder cuando la puntuacion del player es menor a la del dealer al plantarse
+        //-----------------------------Perder cuando la puntuacion del player es menor a la del dealer al plantarse---------------------------------
         else if (jugador.GetComponent<CardHand>().points < dealer.GetComponent<CardHand>().points)
         {
-            //Mensaje de derrota
-            finalMessage.text = "Has perdido";
+            finalMessage.text = "Has perdido";  //Mensaje de derrota
             finalMessage.color = Color.red;
-
             //Desactivar botones
             hitButton.interactable = false;
             stickButton.interactable = false;
-
             //Mostrar puntuación dealer
             puntosDealer.enabled = true;
             puntosDealer.text = "Puntuación: " + dealer.GetComponent<CardHand>().points.ToString();
-
-            //Apuesta
+            //Dar apuesta
             this.gameObject.GetComponent<Bet>().perderApuesta();
         }
     }

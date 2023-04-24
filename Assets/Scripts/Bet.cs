@@ -5,14 +5,8 @@ using UnityEngine.UI;
 
 public class Bet : MonoBehaviour
 {
-    //-----------------------------------------------------------------------------// 
-    //------------------------------ ATRIBUTOS ------------------------------------// 
-
-    [Header("Dinero")]
     public double cartera;
     public double apuesta;
-
-    [Header("Botones apuestas")]
     public Button Plus50Button;
     public Button Plus100Button;
     public Button Plus1000Button;
@@ -23,13 +17,10 @@ public class Bet : MonoBehaviour
     public Button ClearButton;
     public Button BetButton;
     public Button BetButtonActivado;
-
-    [Header("Apuestas Texto")]
     public Text cartera_text;
     public Text apuesta_text;
 
-    //-----------------------------------------------------------------------------// 
-    //------------------------------ M TODOS --------------------------------------// 
+
     void Start()
     {
         //Establece 1000 euros al jugador
@@ -44,16 +35,15 @@ public class Bet : MonoBehaviour
 
     void Update()
     {
+        //Pasar los creditos a texto
         cartera_text.text = cartera.ToString();
         apuesta_text.text = apuesta.ToString();
+        //Cuando acabe la partida que boton de apostar se active
         if (!BetButton.IsInteractable())
         {
             BetButton.interactable = true;
         }
     }
-
-    //-----------------------------------------------------------// 
-    //--------------------- AnyadirApuesta ----------------------//
 
     public void anyadirApuestaCincuenta()
     {
@@ -61,9 +51,7 @@ public class Bet : MonoBehaviour
         {
             apuesta = apuesta + 50;
         }
-
     }
-
     public void anyadirApuestaCien()
     {
         if (cartera >= apuesta + 100)
@@ -71,7 +59,6 @@ public class Bet : MonoBehaviour
             apuesta = apuesta + 100;
         }
     }
-
     public void anyadirApuestaMil()
     {
         if (cartera >= apuesta + 1000)
@@ -79,15 +66,10 @@ public class Bet : MonoBehaviour
             apuesta = apuesta + 1000;
         }
     }
-
     public void apostarTodo()
     {
         apuesta = cartera;
     }
-
-    //-----------------------------------------------------------// 
-    //-------------------- EliminarApuesta ----------------------//
-
     public void eliminarApuestaCincuenta()
     {
         if (apuesta >= 50)
@@ -109,15 +91,10 @@ public class Bet : MonoBehaviour
             apuesta = apuesta - 1000;
         }
     }
-
     public void borrarApuesta()
     {
         apuesta = 0;
     }
-
-    //-----------------------------------------------------------// 
-    //-------------------- EmpezarApuesta ----------------------//
-
     public void apostarAndEmpezar()
     {
 
@@ -132,30 +109,20 @@ public class Bet : MonoBehaviour
         //Deshabilitar botones de Apuestas
         desactivarBotonesApostar();
     }
-
-    //-----------------------------------------------------------// 
-    //---------------- Resultados de Apuesta --------------------//
-
     public void ganarApuesta()
     {
         cartera = cartera + (2 * apuesta);
         apuesta = 0;
     }
-
     public void perderApuesta()
     {
         cartera = cartera - apuesta;
         apuesta = 0;
     }
-
     public void empatarApuesta()
     {
         apuesta = 0;
     }
-
-    //-----------------------------------------------------------// 
-    //------------ Control de botones de Apuesta ----------------//
-
     public void desactivarBotonesApostar()
     {
         Plus50Button.interactable = false;
@@ -169,7 +136,6 @@ public class Bet : MonoBehaviour
         BetButton.gameObject.SetActive(false);
         BetButtonActivado.gameObject.SetActive(true);
     }
-
     public void activarBotonesApostar()
     {
         BetButton.interactable = true;
@@ -184,7 +150,5 @@ public class Bet : MonoBehaviour
         BetButton.gameObject.SetActive(true);
         BetButtonActivado.gameObject.SetActive(false);
     }
-
-    //-----------------------------------------------------------------------------// 
-    //-----------------------------------------------------------------------------// 
+ 
 }
